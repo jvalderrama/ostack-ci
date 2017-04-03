@@ -1,0 +1,114 @@
+- job-template:
+    name: '{pipeline}-congress-dsvm-api-{backend}-{node}{suffix}'
+    node: '{node}'
+
+    wrappers:
+      - build-timeout:
+          timeout: 80
+      - timestamps
+
+    builders:
+      - link-logs
+      - net-info
+      - devstack-checkout
+      - shell: |
+          #!/bin/bash -xe
+          ENABLED_SERVICES=s-proxy,s-object,s-container,s-account,
+          ENABLED_SERVICES+=h-eng,h-api,h-api-cfn,h-api-cw
+
+          DEVSTACK_LOCAL_CONFIG="enable_plugin ceilometer git://git.openstack.org/openstack/ceilometer"
+          DEVSTACK_LOCAL_CONFIG+=$'\n'"enable_plugin heat git://git.openstack.org/openstack/heat"
+
+          export PYTHONUNBUFFERED=true
+          export DEVSTACK_GATE_TEMPEST=1
+          export DEVSTACK_GATE_TEMPEST_ALL_PLUGINS=1
+          export DEVSTACK_GATE_TEMPEST_REGEX="congress_tempest_tests"
+          export DEVSTACK_GATE_NEUTRON=1
+          export PROJECTS="openstack/congress $PROJECTS"
+          export PROJECTS="openstack/python-congressclient $PROJECTS"
+          export DEVSTACK_PROJECT_FROM_GIT=python-congressclient
+          export PROJECTS="openstack/murano $PROJECTS"
+          export PROJECTS="openstack/aodh $PROJECTS"
+          export PROJECTS="openstack/murano-dashboard $PROJECTS"
+          export PROJECTS="openstack/python-muranoclient $PROJECTS"
+          export PROJECTS="openstack/python-aodhclient $PROJECTS"
+
+          # Enable congress devstack plugin.
+          DEVSTACK_LOCAL_CONFIG+=$'\n'"enable_plugin congress git://git.openstack.org/openstack/congress"
+          # To be enabled for Mitaka and later
+          DEVSTACK_LOCAL_CONFIG+=$'\n'"enable_plugin murano git://git.openstack.org/openstack/murano"
+          DEVSTACK_LOCAL_CONFIG+=$'\n'"enable_plugin aodh git://git.openstack.org/openstack/aodh"
+          # To deploy congress as multi-process (api, pe, datasources)
+          DEVSTACK_LOCAL_CONFIG+=$'\n'"CONGRESS_MULTIPROCESS_DEPLOYMENT=True"
+
+          export ENABLED_SERVICES
+          export DEVSTACK_LOCAL_CONFIG
+          export BRANCH_OVERRIDE={branch-override}
+          if [ "$BRANCH_OVERRIDE" != "default" ] ; then
+              export OVERRIDE_ZUUL_BRANCH=$BRANCH_OVERRIDE
+          fi
+          if [ "{backend}" = "postgresql" ] ; then
+              export DEVSTACK_GATE_POSTGRES=1
+          fi
+
+          cp devstack-gate/devstack-vm-gate-wrap.sh ./safe-devstack-vm-gate-wrap.sh
+          ./safe-devstack-vm-gate-wrap.sh
+
+    publishers:
+      - test-results
+      - devstack-logs
+      - console-log
+
+- job-template:
+    name: '{pipeline}-congress-pe-replicated-{backend}{suffix}'
+    node: '{node}'
+
+    wrappers:
+      - build-timeout:
+          timeout: 80
+      - timestamps
+
+    builders:
+      - link-logs
+      - net-info
+      - devstack-checkout
+      - shell: |
+          #!/bin/bash -xe
+          ENABLED_SERVICES=s-proxy,s-object,s-container,s-account,
+          ENABLED_SERVICES+=h-eng,h-api,h-api-cfn,h-api-cw
+
+          DEVSTACK_LOCAL_CONFIG="enable_plugin ceilometer git://git.openstack.org/openstack/ceilometer"
+          DEVSTACK_LOCAL_CONFIG+=$'\n'"enable_plugin heat git://git.openstack.org/openstack/heat"
+
+          export ENABLED_SERVICES
+          export PYTHONUNBUFFERED=true
+          export DEVSTACK_GATE_TEMPEST=1
+          export DEVSTACK_GATE_TEMPEST_ALL_PLUGINS=1
+          export DEVSTACK_GATE_TEMPEST_REGEX="congress_tempest_tests"
+          export DEVSTACK_GATE_NEUTRON=1
+          export PROJECTS="openstack/congress $PROJECTS"
+          export PROJECTS="openstack/python-congressclient $PROJECTS"
+          export PROJECTS="openstack/python-aodhclient $PROJECTS"
+          export PROJECTS="openstack/aodh $PROJECTS"
+          export DEVSTACK_PROJECT_FROM_GIT=python-congressclient
+          # Enable congress devstack plugin.
+          DEVSTACK_LOCAL_CONFIG+=$'\n'"enable_plugin congress git://git.openstack.org/openstack/congress"
+          DEVSTACK_LOCAL_CONFIG+=$'\n'"enable_plugin aodh git://git.openstack.org/openstack/aodh"
+          DEVSTACK_LOCAL_CONFIG+=$'\n'"CONGRESS_REPLICATED=True"
+          DEVSTACK_LOCAL_CONFIG+=$'\n'"CONGRESS_MULTIPROCESS_DEPLOYMENT=True"
+          export DEVSTACK_LOCAL_CONFIG
+          export BRANCH_OVERRIDE={branch-override}
+          if [ "$BRANCH_OVERRIDE" != "default" ] ; then
+              export OVERRIDE_ZUUL_BRANCH=$BRANCH_OVERRIDE
+          fi
+          if [ "{backend}" = "postgresql" ] ; then
+              export DEVSTACK_GATE_POSTGRES=1
+          fi
+
+          cp devstack-gate/devstack-vm-gate-wrap.sh ./safe-devstack-vm-gate-wrap.sh
+          ./safe-devstack-vm-gate-wrap.sh
+
+    publishers:
+      - test-results
+      - devstack-logs
+      - console-log

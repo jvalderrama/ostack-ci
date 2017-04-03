@@ -1,0 +1,75 @@
+elements-dir: /etc/nodepool/elements
+images-dir: /opt/nodepool_dib
+
+cron:
+  cleanup: '*/1 * * * *'
+  check: '*/15 * * * *'
+
+zookeeper-servers:
+  - host: nodepool.openstack.org
+    port: 2181
+
+labels:
+  - name: ubuntu-xenial
+    min-ready: 2
+
+providers:
+  - name: infracloud-chocolate
+    region-name: 'RegionOne'
+    cloud: infracloud-chocolate
+    boot-timeout: 120
+    rate: 0.25
+    image-name-format: '{image.name}-{timestamp}'
+    diskimages:
+      - name: ubuntu-xenial
+        config-drive: true
+    pools:
+      - name: main
+        max-servers: 5
+        labels:
+          - name: ubuntu-xenial
+            min-ram: 8000
+            name-filter: 'nodepool'
+            diskimage: ubuntu-xenial
+
+  - name: infracloud-vanilla
+    region-name: 'RegionOne'
+    cloud: infracloud-vanilla
+    boot-timeout: 120
+    rate: 0.25
+    image-name-format: '{image.name}-{timestamp}'
+    diskimages:
+      - name: ubuntu-xenial
+        config-drive: true
+    pools:
+      - name: main
+        max-servers: 5
+        labels:
+          - name: ubuntu-xenial
+            min-ram: 8000
+            name-filter: 'nodepool'
+            diskimage: ubuntu-xenial
+
+diskimages:
+  - name: ubuntu-xenial
+    elements:
+      - ubuntu-minimal
+      - vm
+      - simple-init
+      - openstack-repos
+      - nodepool-base
+      - cache-devstack
+      - initialize-urandom
+      - cache-bindep
+      - growroot
+      - infra-package-needs
+      - stackviz
+    release: xenial
+    env-vars:
+      TMPDIR: /opt/dib_tmp
+      DIB_CHECKSUM: '1'
+      DIB_IMAGE_CACHE: /opt/dib_cache
+      DIB_APT_LOCAL_CACHE: '0'
+      DIB_DISABLE_APT_CLEANUP: '1'
+      DIB_GRUB_TIMEOUT: '0'
+      DIB_DEBIAN_COMPONENTS: 'main,universe'

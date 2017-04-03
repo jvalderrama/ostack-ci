@@ -1,0 +1,114 @@
+- job-template:
+    name: 'gate-bifrost-integration-tinyipa-{node}'
+    node: '{node}'
+
+    wrappers:
+      - build-timeout:
+          timeout: 60
+
+    builders:
+      - install-distro-packages
+      - link-logs
+      - net-info
+      - zuul-git-prep-upper-constraints
+      - shell: |
+          #!/bin/bash -eux
+          cd $WORKSPACE
+
+          /usr/zuul-env/bin/zuul-cloner --cache-dir /opt/git \
+            git://git.openstack.org \
+            openstack/bifrost \
+            openstack/ironic \
+            openstack/python-ironicclient \
+            openstack-infra/shade \
+            openstack/ironic-inspector \
+            openstack/python-ironic-inspector-client
+          export GIT_BASE=$(pwd)
+          export UPPER_CONSTRAINTS_FILE=$WORKSPACE/upper-constraints.txt
+          cd openstack/bifrost
+          scripts/test-bifrost.sh
+
+    publishers:
+      - devstack-logs
+      - console-log
+
+- job-template:
+    name: 'gate-bifrost-integration-dibipa-debian-{node}-nv'
+    node: '{node}'
+
+    wrappers:
+      - build-timeout:
+          timeout: 120
+
+    builders:
+      - install-distro-packages
+      - link-logs
+      - net-info
+      - zuul-git-prep-upper-constraints
+      - shell: |
+          #!/bin/bash -eux
+          cd $WORKSPACE
+
+          /usr/zuul-env/bin/zuul-cloner --cache-dir /opt/git \
+            git://git.openstack.org \
+            openstack/bifrost \
+            openstack/diskimage-builder \
+            openstack/ironic \
+            openstack/python-ironicclient \
+            openstack-infra/shade \
+            openstack/ironic-inspector \
+            openstack/python-ironic-inspector-client
+          export GIT_BASE=$(pwd)
+          export UPPER_CONSTRAINTS_FILE=$WORKSPACE/upper-constraints.txt
+          cd openstack/bifrost
+          scripts/test-bifrost-build-images.sh
+
+    publishers:
+      - devstack-logs
+      - console-log
+
+- job-template:
+    name: 'gate-bifrost-integration-dhcp-{node}-nv'
+    node: '{node}'
+
+    wrappers:
+      - build-timeout:
+          timeout: 120
+
+    builders:
+      - install-distro-packages
+      - link-logs
+      - net-info
+      - zuul-git-prep-upper-constraints
+      - shell: |
+          #!/bin/bash -eux
+          cd $WORKSPACE
+
+          /usr/zuul-env/bin/zuul-cloner --cache-dir /opt/git \
+            git://git.openstack.org \
+            openstack/bifrost \
+            openstack/diskimage-builder \
+            openstack/ironic \
+            openstack/python-ironicclient \
+            openstack-infra/shade \
+            openstack/ironic-inspector \
+            openstack/python-ironic-inspector-client
+          export GIT_BASE=$(pwd)
+          export UPPER_CONSTRAINTS_FILE=$WORKSPACE/upper-constraints.txt
+          cd openstack/bifrost
+          scripts/test-bifrost-inventory-dhcp.sh
+
+    publishers:
+      - devstack-logs
+      - console-log
+
+
+- job-group:
+    name: bifrost-integration-jobs
+    node:
+      - ubuntu-trusty
+      - ubuntu-xenial
+    jobs:
+      - gate-bifrost-integration-tinyipa-{node}
+      - gate-bifrost-integration-dibipa-debian-{node}-nv
+      - gate-bifrost-integration-dhcp-{node}-nv

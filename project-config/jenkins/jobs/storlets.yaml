@@ -1,0 +1,15 @@
+- job-template:
+    name: 'gate-storlets-functional-{node}'
+    node: '{node}'
+
+    builders:
+      - gerrit-git-prep
+      - shell: |
+          #!/bin/bash -xe
+          tests/setup_functional_test.sh
+          tox -e func
+
+    publishers:
+      - test-results
+      - devstack-logs
+      - console-log

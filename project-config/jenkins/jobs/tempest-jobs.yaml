@@ -1,0 +1,57 @@
+- job-group:
+    name: 'lib-forward-testing-{name}'
+    jobs:
+      - '{pipeline}-tempest-dsvm-neutron-src-{name}-{node}{suffix}':
+          pipeline: gate
+          node:
+            - ubuntu-trusty
+            - ubuntu-xenial
+          suffix: ''
+          branch-override: default
+
+- job-group:
+    name: 'stable-compat-jobs-{name}'
+    jobs:
+      - '{pipeline}-tempest-dsvm-neutron-src-{name}-{node}{suffix}':
+          pipeline: gate
+          node: ubuntu-xenial
+          suffix: '-newton'
+          branch-override: stable/newton
+      - '{pipeline}-tempest-dsvm-neutron-src-{name}-{node}{suffix}':
+          pipeline: gate
+          node: ubuntu-xenial
+          suffix: '-ocata'
+          branch-override: stable/ocata
+
+
+- job-template:
+    name: '{pipeline}-tempest-dsvm-cinder-v1-{node}{suffix}'
+    node: '{node}'
+
+    wrappers:
+      - build-timeout:
+          timeout: 180
+      - timestamps
+
+    builders:
+      - print-template-name:
+          template-name: "{template-name}"
+      - link-logs
+      - net-info
+      - devstack-checkout
+      - shell: |
+          #!/bin/bash -xe
+          export PYTHONUNBUFFERED=true
+          export DEVSTACK_GATE_TEMPEST=1
+          export DEVSTACK_LOCAL_CONFIG="TEMPEST_VOLUME_API_V1=True"
+          export DEVSTACK_GATE_TEMPEST_REGEX="volume"
+          export BRANCH_OVERRIDE={branch-override}
+          if [ "$BRANCH_OVERRIDE" != "default" ] ; then
+              export OVERRIDE_ZUUL_BRANCH=$BRANCH_OVERRIDE
+          fi
+          cp devstack-gate/devstack-vm-gate-wrap.sh ./safe-devstack-vm-gate-wrap.sh
+          ./safe-devstack-vm-gate-wrap.sh
+
+    publishers:
+      - devstack-logs
+      - console-log

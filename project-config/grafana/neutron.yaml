@@ -1,0 +1,102 @@
+dashboard:
+  title: Neutron Failure Rate
+  rows:
+    - title: Description
+      height: 100px
+      panels:
+        - title: Description
+          content: |
+            **This dashboard is managed by [Grafyaml](http://docs.openstack.org/infra/system-config/grafyaml.html).**
+
+            If you would like to make changes to this dashboard, please see the grafana directory in [project-config](https://git.openstack.org/cgit/openstack-infra/project-config/tree/grafana/neutron.yaml).
+          type: text
+    - title: Graphs
+      height: 320px
+      panels:
+        - title: Unit Tests Failure Rates (Check queue)
+          span: 4
+          targets:
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-neutron-python27-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-neutron-python27-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-python27-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-neutron-python27-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-neutron-python27-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-python27-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-neutron-python34.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-neutron-python34.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-python34')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-neutron-python35.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-neutron-python35.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-python35')
+          type: graph
+        - title: Unit Tests Failure Rates (Gate queue)
+          span: 4
+          targets:
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-neutron-python27-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-neutron-python27-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-python27-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-neutron-python27-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-neutron-python27-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-python27-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-neutron-python34.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-neutron-python34.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-python34')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-neutron-python35.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-neutron-python35.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-python35')
+          type: graph
+        - title: Periodic jobs
+          span: 4
+          targets:
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.periodic.job.periodic-neutron-py27-with-oslo-master.FAILURE),sum(stats_counts.zuul.pipeline.periodic.job.periodic-neutron-py27-with-oslo-master.{SUCCESS,FAILURE})),'24hours'), 'periodic-neutron-py27-with-oslo-master')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.periodic.job.periodic-neutron-py35-with-oslo-master.FAILURE),sum(stats_counts.zuul.pipeline.periodic.job.periodic-neutron-py35-with-oslo-master.{SUCCESS,FAILURE})),'24hours'), 'periodic-neutron-py35-with-oslo-master')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.periodic.job.periodic-neutron-py35-with-neutron-lib-master.FAILURE),sum(stats_counts.zuul.pipeline.periodic.job.periodic-neutron-py35-with-neutron-lib-master.{SUCCESS,FAILURE})),'24hours'), 'periodic-neutron-py35-with-neutron-lib-master')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.periodic.job.periodic-tempest-dsvm-neutron-pg-full-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.periodic.job.periodic-tempest-dsvm-neutron-pg-full-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'periodic-tempest-dsvm-neutron-pg-full-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.periodic.job.periodic-neutron-dsvm-functional-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.periodic.job.periodic-neutron-dsvm-functional-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'periodic-neutron-dsvm-functional-ubuntu-xenial')
+          type: graph
+        - title: Integrated Tempest Failure Rates (Gate queue)
+          span: 4
+          targets:
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-full-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-full-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-full-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-full-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-full-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-full-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-neutron-full-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-neutron-full-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-full-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-neutron-full-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-neutron-full-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-full-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-neutron-dsvm-api-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-neutron-dsvm-api-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-dsvm-api-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-neutron-dsvm-api-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-neutron-dsvm-api-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-dsvm-api-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-neutron-dvr-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-neutron-dvr-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-dvr-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-neutron-dvr-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-neutron-dvr-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-dvr-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-neutron-linuxbridge-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-neutron-linuxbridge-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-linuxbridge-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-neutron-linuxbridge-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-tempest-dsvm-neutron-linuxbridge-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-linuxbridge-ubuntu-xenial')
+          type: graph
+        - title: Integrated Grenade Failure Rates (Gate queue)
+          span: 4
+          targets:
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-multinode-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-multinode-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-multinode-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-neutron-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-neutron-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-neutron-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-neutron-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-neutron-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-neutron-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-neutron-multinode-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-neutron-multinode-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-neutron-multinode-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-neutron-multinode-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-neutron-multinode-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-neutron-multinode-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-neutron-dvr-multinode-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-neutron-dvr-multinode-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-neutron-dvr-multinode-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-neutron-dvr-multinode-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.gate.job.gate-grenade-dsvm-neutron-dvr-multinode-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-neutron-dvr-multinode-ubuntu-xenial')
+          type: graph
+        - title: API/Functional/Fullstack Failure Rates/KeystoneV3 (Check queue)
+          span: 4
+          targets:
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-neutron-dsvm-api-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-neutron-dsvm-api-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-dsvm-api-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-neutron-dsvm-api-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-neutron-dsvm-api-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-dsvm-api-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-neutron-dsvm-functional-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-neutron-dsvm-functional-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-dsvm-functional-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-neutron-dsvm-fullstack-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-neutron-dsvm-fullstack-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-dsvm-fullstack-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-identity-v3-only-full-nv.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-identity-v3-only-full-nv.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-identity-v3-only-full-nv')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-neutron-dsvm-functional-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-neutron-dsvm-functional-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-dsvm-functional-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-neutron-dsvm-fullstack-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-neutron-dsvm-fullstack-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-neutron-dsvm-fullstack-ubuntu-xenial')
+          type: graph
+        - title: DVR/LinuxBridge/Multi-node Failure Rates (Check queue)
+          span: 4
+          targets:
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-full-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-full-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-full-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-dvr-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-dvr-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-dvr-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-dvr-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-dvr-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-dvr-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-linuxbridge-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-linuxbridge-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-linuxbridge-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-linuxbridge-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-linuxbridge-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-linuxbridge-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-multinode-full-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-multinode-full-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-multinode-full-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-dvr-multinode-full-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-dvr-multinode-full-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-dvr-multinode-full-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-grenade-dsvm-neutron-multinode-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-grenade-dsvm-neutron-multinode-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-neutron-multinode-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-grenade-dsvm-neutron-multinode-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-grenade-dsvm-neutron-multinode-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-neutron-multinode-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-grenade-dsvm-neutron-dvr-multinode-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-grenade-dsvm-neutron-dvr-multinode-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-neutron-dvr-multinode-ubuntu-trusty')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-grenade-dsvm-neutron-dvr-multinode-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-grenade-dsvm-neutron-dvr-multinode-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-neutron-dvr-multinode-ubuntu-xenial')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-grenade-dsvm-neutron-linuxbridge-multinode-ubuntu-xenial-nv.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-grenade-dsvm-neutron-linuxbridge-multinode-ubuntu-xenial-nv.{SUCCESS,FAILURE})),'24hours'), 'gate-grenade-dsvm-neutron-linuxbridge-multinode-ubuntu-xenial-nv')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-dvr-multinode-scenario-ubuntu-xenial-nv.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-dvr-multinode-scenario-ubuntu-xenial-nv.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-dvr-multinode-scenario-ubuntu-xenial-nv')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-scenario-linuxbridge-ubuntu-xenial-nv.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-tempest-dsvm-neutron-scenario-linuxbridge-ubuntu-xenial-nv.{SUCCESS,FAILURE})),'24hours'), 'gate-tempest-dsvm-neutron-scenario-linuxbridge-ubuntu-xenial-nv')
+          type: graph
+        - title: Rally Failure Rates
+          span: 4
+          targets:
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-rally-dsvm-neutron-neutron-ubuntu-trusty.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-rally-dsvm-neutron-neutron-ubuntu-trusty.{SUCCESS,FAILURE})),'24hours'), 'gate-rally-dsvm-neutron-neutron-ubuntu-trusty (check)')
+            - target: alias(movingAverage(asPercent(transformNull(stats_counts.zuul.pipeline.check.job.gate-rally-dsvm-neutron-neutron-ubuntu-xenial.FAILURE),sum(stats_counts.zuul.pipeline.check.job.gate-rally-dsvm-neutron-neutron-ubuntu-xenial.{SUCCESS,FAILURE})),'24hours'), 'gate-rally-dsvm-neutron-neutron-ubuntu-xenial (check)')
+          type: graph
+
